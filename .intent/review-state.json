@@ -7990,11 +7990,12 @@
       "snapshot": {
         ".omp/factory.json": "2951500bacbb467fe06b881cfa4a44a18f0fb44d496effae7c4ad2d7588a5469"
       },
-      "head": "b3469a24f8330b8ad05409e309068f647735c7d3",
+      "head": "3ac3373cc57506db293f1b0cd246fe2bc119400e",
       "outcome": "no-change",
-      "reason": "Rebased onto the branch below; this layer changes no guidance the skill teaches beyond what its PR describes.",
+      "reason": "New factory checks file .omp/factory.json listing pnpm run lint, pnpm run lint:knip and CI=true pnpm run test for software-factory runs; no skill guidance or library behaviour changed.",
       "evidence": [
-        "Changed files: .omp/factory.json"
+        ".omp/factory.json: checks = [\"pnpm run lint\", \"pnpm run lint:knip\", \"CI=true pnpm run test\"]",
+        "No file under packages/lib changed in this layer"
       ]
     }
   }
