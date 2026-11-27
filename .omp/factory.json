@@ -1,0 +1,11 @@
+{
+  "checks": [
+    "pnpm run lint",
+    "pnpm run lint:knip",
+    "pnpm run build",
+    "CI=true pnpm run test",
+    "pnpm run test:docs-examples",
+    "pnpm run docs:sync:check",
+    "pnpm run docs:build"
+  ]
+}
