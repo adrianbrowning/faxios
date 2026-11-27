@@ -107,18 +107,6 @@
         "Changed: packages/lib/package.json at edb8b3689df521ac7b5a245db580803c931f6e60"
       ]
     },
-    "source:knip.json": {
-      "fingerprint": "6be9f175c6fdc1d7846305a36853c5293f35956116f7e9006172bd51bfbcbf09",
-      "snapshot": {
-        "knip.json": "90e7d4084920e331896a1ef89ca156d88515ccaff7a3287ca8bfa564ff53d4d6"
-      },
-      "head": "cb75316798983250b4de7b968d0ea6b9c19d25ca",
-      "outcome": "no-change",
-      "reason": "Docs-only: adds the TanStack Query guide page, its sidebar link and a docs-harness devDependency; no faxios API, option or behavior the configure-requests skill teaches changed",
-      "evidence": [
-        "Changed: knip.json at 90fb4b89b11cda555bbc2cd38bb1bb4cefa9aff3"
-      ]
-    },
     "source:PRE_RELEASE_CHANGELOG.md": {
       "fingerprint": "a58acb1e6e246d5334baf323a27652ca550315714dbb0a0708e61b7b3930e214",
       "snapshot": {
@@ -7935,13 +7923,13 @@
       ]
     },
     "source:packages/docs/pages/advanced/tanstack-query.md": {
-      "fingerprint": "429b191fc700f3a2a0b9759f6515d9ea53dde3de90419b7d852f47ff2893a12c",
+      "fingerprint": "07f3935689c443b4dd8b0d5c94b00566e95fa7023bd8b559e418b316d5ccf44d",
       "snapshot": {
-        "packages/docs/pages/advanced/tanstack-query.md": "3ab8506d7fd8bcb31494071ca12b6d5a1084cd44e338457850d4f6d223a63a69"
+        "packages/docs/pages/advanced/tanstack-query.md": "a5425de7ee582a514909b8b156f7379e715af657669ddd7931a2e058b5015e56"
       },
-      "head": "1d89b4736246d9f01bd1f1e1c0b60a57602892f9",
+      "head": "2d805d7810d5200bec9f3c2b68d43b5b6089a5a2",
       "outcome": "no-change",
-      "reason": "Docs only: the TanStack Query guide teaches faxios as the typed request layer under TanStack Query: a typed queryFn that wraps a define() endpoint and forwards the query signal, cancellation through that signal, reading FaxiosError from query error state, one retry owner per example, infinite queries, SSR client scope and the three cache layers. This round changes only two comments: the stand-in env.fetch in the Server rendering block and in the Three cache layers fetchOptions block now say it hands each request to the global fetch, ignoring the reply, before answering with canned data. Code unchanged. No skill guidance changes.",
+      "reason": "Docs only: the TanStack Query guide teaches faxios as the typed request layer under TanStack Query: a typed queryFn that wraps a define() endpoint and forwards the query signal, cancellation through that signal, reading FaxiosError from query error state, one retry owner per example, infinite queries, SSR client scope and the three cache layers. Against its base this PR changes the guide prose and one example: QueryClient.query's fresh-cache case, the default revert: true and revert: false outcomes in the cancel prose (with silent: true still reverting but rejecting the query promise), the cancel exception in the error section, the retry-plugin bullet linking the plugin page, staleTime described as freshness, and the Three cache layers fetchOptions block, whose stand-in env.fetch now builds a Request, sends it through the global fetch and logs request.cache under a request= marker. No skill guidance changes.",
       "evidence": [
         "packages/docs/pages/advanced/tanstack-query.md",
         "@tanstack/query-core 5.107.1 queryClient.js query() and cancelQueries(), query.js fetch()",
@@ -7982,6 +7970,19 @@
       "reason": "scripts/intent-restack.sh record refuses (exit 1) anything on disk at a path the layer deleted: an untracked or ignored file, symlink, directory, FIFO or device gets 'remove or move them', and a directory the layer committed there gets its own refusal, because Intent cannot review a directory at a deleted path it does not skip ('Cannot review non-file'), so --record and CI's check-skills fail; the refusal is conservative for paths Intent skips. The header says so. No skill guidance changes.",
       "evidence": [
         "scripts/intent-restack.sh"
+      ]
+    },
+    "source:knip.json": {
+      "fingerprint": "6be9f175c6fdc1d7846305a36853c5293f35956116f7e9006172bd51bfbcbf09",
+      "snapshot": {
+        "knip.json": "90e7d4084920e331896a1ef89ca156d88515ccaff7a3287ca8bfa564ff53d4d6"
+      },
+      "head": "2d805d7810d5200bec9f3c2b68d43b5b6089a5a2",
+      "outcome": "no-change",
+      "reason": "Dev tooling only: knip.json lists mkfifo in ignoreBinaries because packages/tests/unit/scripts/intentRestack.test.ts creates a FIFO at a deleted path with the mkfifo binary; no faxios API, option or behavior the configure-requests skill teaches changed",
+      "evidence": [
+        "knip.json at 3ae1fa69: ignoreBinaries gains mkfifo",
+        "packages/tests/unit/scripts/intentRestack.test.ts runs mkfifo"
       ]
     }
   }
