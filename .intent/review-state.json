@@ -108,11 +108,11 @@
       ]
     },
     "source:knip.json": {
-      "fingerprint": "79674174cfeeb86bcd3092967b346db3c886f7ac893b03529d2d6edbf5caf317",
+      "fingerprint": "6be9f175c6fdc1d7846305a36853c5293f35956116f7e9006172bd51bfbcbf09",
       "snapshot": {
-        "knip.json": "0ad3e1d94f3558520afaaa1aebdfd2fd6093bc48b8472e86dada95d21badd212"
+        "knip.json": "90e7d4084920e331896a1ef89ca156d88515ccaff7a3287ca8bfa564ff53d4d6"
       },
-      "head": "8155f7ca90382498c60c99e11a919ab2dfe016a4",
+      "head": "cb75316798983250b4de7b968d0ea6b9c19d25ca",
       "outcome": "no-change",
       "reason": "Docs-only: adds the TanStack Query guide page, its sidebar link and a docs-harness devDependency; no faxios API, option or behavior the configure-requests skill teaches changed",
       "evidence": [
