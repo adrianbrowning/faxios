@@ -7959,15 +7959,16 @@
       ]
     },
     "source:packages/docs/pages/advanced/tanstack-query.md": {
-      "fingerprint": "135201ca1c7d2bb4ff1298e157a69001355bbf13be310ded557d280b6c593c08",
+      "fingerprint": "c287131e60a3417d970ba938ceb019d0757b31e143972b10aef2d608dade8105",
       "snapshot": {
-        "packages/docs/pages/advanced/tanstack-query.md": "a9fa3c456dad051b46ff16036b14c5b3e94450f8d2cdafcbd1d9783c72dad201"
+        "packages/docs/pages/advanced/tanstack-query.md": "01f59c176afbf81424bec15e17e9f76b1beb1f464c8313d6ff6f8697772c805a"
       },
-      "head": "31be80a8aeb3712d852b779370bcd134c323d2c4",
+      "head": "821c6f94ed7a45fef2b77a48bae015cfca6962af",
       "outcome": "no-change",
-      "reason": "Docs only: the Infinite queries section now says queryClient.infiniteQuery on a stale cache refetches from the first page param like refetch, or up to `pages` pages when pages is passed (query-core 5.107.1 uses pages ?? oldPages.length), and the infinite example's retry: false reason lives only in its prose, with the retry-owner summary pointing to it. No faxios API or behavior the configure-requests skill teaches changed.",
+      "reason": "Docs only: the TanStack Query guide adds a Server rendering section (a QueryClient per request, prefetch with queryClient.query and a faxios queryFn, dehydrate on the server, hydrate in the browser, visitor credentials passed per request rather than on a shared instance or shared auth getter, a failed prefetch caught and left out of the dehydrated state, links to TanStack SSR, advanced SSR and caching guides) and a Three cache layers section telling TanStack Query cache (faxios sends no request while data is fresh; refetch triggers linked to TanStack Important Defaults and Caching guides), Fetch HTTP caching through fetchOptions (cache: \"no-store\", already taught by the configure-requests skill) and a not-yet-built faxios response-cache plugin apart. No faxios API or behavior the configure-requests skill teaches changed.",
       "evidence": [
-        "Changed: packages/docs/pages/advanced/tanstack-query.md at ffb387aa (Infinite queries: queryClient.infiniteQuery pages paragraph; Choosing one retry owner summary pointer; defaultOptions comment)"
+        "Changed: packages/docs/pages/advanced/tanstack-query.md at 06c7718d, 3dfbb37e and a652c153 (Server rendering section and executed block with per-page query keys and a failed prefetch; Three cache layers section and the fetchOptions cache block)",
+        "packages/lib/skills/configure-requests/SKILL.md already shows fetchOptions: { cache: \"no-store\" }"
       ]
     }
   }

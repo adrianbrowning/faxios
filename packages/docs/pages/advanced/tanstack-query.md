@@ -360,3 +360,114 @@ console.log(`page params: ${pageParams.join(", ")}; users: ${users.join(", ")}; 
 ```
 
 The same `queryKey`, `queryFn`, `initialPageParam` and `getNextPageParam` options work unchanged with `useInfiniteQuery` in a framework adapter such as `@tanstack/react-query`, which returns the same `data`, `hasNextPage` and `fetchNextPage`. Without an observer, `queryClient.infiniteQuery` takes the same options and resolves with the `{ pages, pageParams }` data, but it doesn't walk every page the way the `fetchNextPage` loop above does. On an empty cache it fetches and caches only the `initialPageParam` page, or up to `pages` pages from the start when you also pass `pages` along with `getNextPageParam`. When the query is already cached, it returns the cached pages if they are fresh; otherwise it fetches them again from the first page param, like `refetch`, or fetches up to `pages` pages when you pass `pages`, and the cache keeps only those.
+
+## Server rendering
+
+Server rendering with TanStack Query has three steps: prefetch the queries a page needs before you render it, dehydrate the cache into state you embed in the page, and hydrate that state into the browser's `QueryClient`, so the browser shows the data without fetching it again. The query function is the same faxios call on both sides.
+
+Create a new `QueryClient` for every request, never one at module level: a shared client keeps every user's data in one cache, so one user's data could reach another user's page. The faxios instance can stay at module level only while it carries no per-user state: on the server, pass a visitor's cookie or token per request (for example `headers` in the query function's `getUser` call) or create the instance per request, never on a shared instance's `api.defaults.headers` or in a store a shared `authBearer`/`authenticate` getter reads, because concurrent renders would then send one user's credentials with another user's requests. Prefetch with `queryClient.query`, which rejects when the request fails; catch that rejection to render the page anyway, because `dehydrate` leaves out failed queries by default, so the browser fetches them itself.
+
+```ts expect=log:dehydrated%20queries%3A%20user%3A42%20%7C%20user%3A7%20%7C%20none,log:browser%3A%20Ada%20Lovelace%2C%20requests%3A%203
+import faxios from "@gcmdev/faxios";
+import { type DehydratedState, QueryClient, dehydrate, hydrate } from "@tanstack/query-core";
+import { z } from "zod";
+
+// The users the API in this example answers with, by id; any other id gets no name, so its response fails the schema.
+const userNames: Record<string, string> = { 42: "Ada Lovelace", 7: "Grace Hopper" };
+let requests = 0;
+
+const api = faxios.create({
+  baseURL: "https://api.example.com",
+  // Stands in for the API: it counts and sends each request, then answers with the user it asked for.
+  env: {
+    fetch: async (input, init) => {
+      requests += 1;
+      const request = new Request(input, init);
+      await fetch(request);
+      const id = new URL(request.url).pathname.split("/").at(-1) ?? "";
+      return Response.json({ id, name: userNames[id] });
+    },
+  },
+});
+
+const getUser = api.define("get", "/users/{id}", {
+  pathParamsSchema: z.object({ id: z.string() }),
+  responseSchema: z.object({ id: z.string(), name: z.string() }),
+});
+
+// The same query options on the server and in the browser.
+function userQuery(id: string) {
+  return {
+    queryKey: [ "user", id ],
+    queryFn: async ({ signal }: { signal: AbortSignal; }) => (await getUser({ pathParams: { id }, signal })).data,
+    // Above 0, so the browser doesn't fetch the user again right after it hydrates.
+    staleTime: 60 * 1000,
+  };
+}
+
+// On the server: a new QueryClient for each request.
+async function renderUserPage(id: string): Promise<DehydratedState> {
+  const queryClient = new QueryClient();
+  // A failed prefetch still renders the page; the browser fetches the user itself.
+  await queryClient.query(userQuery(id)).catch(() => {});
+  // Serialize this state into the page; see the note on serialization below.
+  return dehydrate(queryClient);
+}
+
+const pageFor42 = await renderUserPage("42");
+const pageFor7 = await renderUserPage("7");
+const pageForUnknown = await renderUserPage("404");
+// Each page carries only its own request's query, and the failed prefetch leaves its page without one.
+const keys = [ pageFor42, pageFor7, pageForUnknown ].map(page => page.queries.map(query => query.queryKey.join(":")).join(",") || "none");
+console.log(`dehydrated queries: ${keys.join(" | ")}`); // dehydrated queries: user:42 | user:7 | none
+
+// In the browser: hydrate the state the server embedded in the page.
+const browserClient = new QueryClient();
+hydrate(browserClient, pageFor42);
+const user = await browserClient.query(userQuery("42"));
+// The browser used the server's data, so the only requests are the three server renders.
+console.log(`browser: ${user.name}, requests: ${requests}`); // browser: Ada Lovelace, requests: 3
+```
+
+The browser's `query` call returns the hydrated user without a request because the query's `staleTime` keeps that data fresh. With a framework adapter, pass the same options to `useQuery` in the browser; `@tanstack/react-query` hydrates the state for you with `HydrationBoundary`. Choose `staleTime` and `gcTime` for server rendering with TanStack Query's [Server Rendering & Hydration](https://tanstack.com/query/latest/docs/framework/react/guides/ssr) guide, which also explains how to serialize the dehydrated state into the page safely: plain `JSON.stringify` output in a `<script>` tag is open to XSS. Its [Advanced Server Rendering](https://tanstack.com/query/latest/docs/framework/react/guides/advanced-ssr) guide covers streaming and server components, and its [Caching](https://tanstack.com/query/latest/docs/framework/react/guides/caching) guide covers how `staleTime` and `gcTime` work together.
+
+## Three cache layers
+
+Three different caches can sit between a component and the API, and each does its own job:
+
+- **TanStack Query's cache** holds server state: the data each query function returned, by query key, in the `QueryClient`'s memory. `staleTime` decides when TanStack Query fetches a query again and `gcTime` when it drops a query nothing uses. faxios sends a request only when TanStack Query calls the query function, so while a query's data is fresh `queryClient.query` returns it from the cache and faxios sends no request. Which triggers refetch a query (mounting, window focus, `refetchInterval`, `invalidateQueries`) is TanStack Query's to decide; see its [Important Defaults](https://tanstack.com/query/latest/docs/framework/react/guides/important-defaults) and [Caching](https://tanstack.com/query/latest/docs/framework/react/guides/caching) guides.
+- **Fetch HTTP caching** is the HTTP cache of the browser or runtime that `fetch` uses, driven by the response's `Cache-Control` and related headers. faxios has no cache option of its own: set the Fetch `cache` mode through [`fetchOptions`](/pages/advanced/request-config#fetchoptions), for example `fetchOptions: { cache: "no-store" }`, so a refetch TanStack Query starts reaches the server instead of an HTTP-cached response.
+- **A faxios response-cache plugin** doesn't exist. If one is added later, it is an HTTP-response cache inside faxios, distinct from TanStack Query's server-state cache and from Fetch HTTP caching.
+
+This query function passes `fetchOptions` along with the `signal`, so every fetch of the query skips the HTTP cache:
+
+```ts expect=log:fetch%20cache%3A%20no-store
+import faxios from "@gcmdev/faxios";
+import { QueryClient } from "@tanstack/query-core";
+import { z } from "zod";
+
+const api = faxios.create({
+  baseURL: "https://api.example.com",
+  // Stands in for the API: it shows the Fetch cache mode the request was sent with.
+  env: {
+    fetch: async (_input, init) => {
+      console.log(`fetch cache: ${init?.cache}`);
+      return Response.json({ id: "42", name: "Ada Lovelace" });
+    },
+  },
+});
+
+const getUser = api.define("get", "/users/{id}", {
+  pathParamsSchema: z.object({ id: z.string() }),
+  responseSchema: z.object({ id: z.string(), name: z.string() }),
+});
+
+const queryClient = new QueryClient();
+
+const user = await queryClient.query({
+  queryKey: [ "user", "42" ],
+  queryFn: async ({ signal }) =>
+    (await getUser({ pathParams: { id: "42" }, signal, fetchOptions: { cache: "no-store" } })).data,
+});
+console.log(user.name); // Ada Lovelace
+```
