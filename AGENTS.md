@@ -46,6 +46,7 @@ This file is the canonical contributor guide for both human and AI agents workin
 
 - ESM only: `zshy` builds `packages/lib/src` into `dist/` (ESM bundles plus `.d.ts`). There's no CJS build. `dist/` is generated; don't edit it.
 - A new public entry point goes in both `exports` maps in `packages/lib/package.json` (the `zshy` source map and the published dist map) and needs the `@ts-self-types` pragma that Deno uses to find its `.d.ts`.
+- `VERSION` in `packages/lib/src/lib/env/data.ts` mirrors `version` in `packages/lib/package.json`: faxios sends it in the User-Agent and error messages, and `packages/tests/unit/version.test.ts` fails when the two differ. `bumpy version` bumps only `package.json`, so `release.yml` runs `packages/tests/scripts/sync-version.ts` on the Version Packages PR to copy the version into `VERSION` and the packaged skill's `library_version`. Don't change `VERSION` by hand.
 
 ## Changes And Releases
 
