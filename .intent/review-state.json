@@ -7959,16 +7959,18 @@
       ]
     },
     "source:packages/docs/pages/advanced/tanstack-query.md": {
-      "fingerprint": "c287131e60a3417d970ba938ceb019d0757b31e143972b10aef2d608dade8105",
+      "fingerprint": "f9d5f3e585914589ff77cc17560477363a301a9328adb9ff06c28eca85f61bdf",
       "snapshot": {
-        "packages/docs/pages/advanced/tanstack-query.md": "01f59c176afbf81424bec15e17e9f76b1beb1f464c8313d6ff6f8697772c805a"
+        "packages/docs/pages/advanced/tanstack-query.md": "0cddcda9ddb83c919104fedd3674e2f491c0e7db997a4879c054eb5ba7aecdc7"
       },
-      "head": "821c6f94ed7a45fef2b77a48bae015cfca6962af",
+      "head": "c207afe82105035e88a1d3033a9ad1e0e3bf85b8",
       "outcome": "no-change",
-      "reason": "Docs only: the TanStack Query guide adds a Server rendering section (a QueryClient per request, prefetch with queryClient.query and a faxios queryFn, dehydrate on the server, hydrate in the browser, visitor credentials passed per request rather than on a shared instance or shared auth getter, a failed prefetch caught and left out of the dehydrated state, links to TanStack SSR, advanced SSR and caching guides) and a Three cache layers section telling TanStack Query cache (faxios sends no request while data is fresh; refetch triggers linked to TanStack Important Defaults and Caching guides), Fetch HTTP caching through fetchOptions (cache: \"no-store\", already taught by the configure-requests skill) and a not-yet-built faxios response-cache plugin apart. No faxios API or behavior the configure-requests skill teaches changed.",
+      "reason": "Docs only: the TanStack Query guide (packages/docs/pages/advanced/tanstack-query.md) teaches using faxios as the typed request layer under TanStack Query: a define() endpoint called from a queryFn with the query signal and returning response.data, run with queryClient.query (not the deprecated fetchQuery); cancellation through that signal (faxios CanceledError, TanStack CancelledError); reading FaxiosError from query error state with isFaxiosError and a status/code-only message, covering a 404, a network failure with no status and a non-faxios error, logging toJSON() with params secrets listed in redact, a note that params still go out in the request URL so credentials belong in a header where the API accepts one, and a Register.defaultError note that also types mutation errors; one retry owner per example (TanStack retry with no faxios retry plugin, or the plugin with retry: false) and a warning that enabling both multiplies attempts. The TanStack retry defaults (observers retry 3 times in the browser and not at all on the server; queryClient.query doesn't retry unless retry is set) are stated only in the 'Choosing one retry owner' bullet, and the other sections link to it. Infinite queries use InfiniteQueryObserver with typed page params and a throwOnError page loop over a full list; a separate docs-only block repeats that loop, written the same way, past the last page as a browser through query-core's environmentManager.setIsServer(() => false), restored afterwards, so its one-request marker fails when retry: false is removed. Then SSR with a QueryClient per request, per-request credentials and dehydrate/hydrate, and the three cache layers with fetchOptions cache. The executed examples check their requests and logged output through harness markers. No faxios API or behavior that the configure-requests skill teaches changed, so the skill needs no update.",
       "evidence": [
-        "Changed: packages/docs/pages/advanced/tanstack-query.md at 06c7718d, 3dfbb37e and a652c153 (Server rendering section and executed block with per-page query keys and a failed prefetch; Three cache layers section and the fetchOptions cache block)",
-        "packages/lib/skills/configure-requests/SKILL.md already shows fetchOptions: { cache: \"no-store\" }"
+        "Changed: packages/docs/pages/advanced/tanstack-query.md across slices 01-07, last at e7fb0c03 (the infinite example writes its queryFn and throwOnError loop inline again, and the browser-mode block repeats that loop with the same observer name; the retry plugin example comment says retry: false keeps the plugin the only retry owner; the queryClient.query retry default is stated only in the retry-owner bullet; the error block counter comment says a call with its own env.fetch is not counted)",
+        "packages/lib/src/lib/core/resolveRequestURL.ts serializes params into the request URL with buildURL; FaxiosError DEFAULT_REDACT_KEYS includes authorization",
+        "packages/lib/skills/configure-requests/SKILL.md already teaches signal, transformResponse, redact, env.fetch and fetchOptions, which the guide uses unchanged",
+        "No packages/lib source changed in this run"
       ]
     }
   }
