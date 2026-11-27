@@ -13,7 +13,7 @@ metadata:
     generating Axios APIs that faxios removed or never verified.
   type: core
   library: '@gcmdev/faxios'
-  library_version: '0.3.0'
+  library_version: '0.4.0'
 sources:
   - src/index.ts
   - src/lib/faxios.ts
